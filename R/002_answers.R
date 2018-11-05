@@ -21,6 +21,17 @@ head(clinical)
 # 1.1 Use survey, transactional and clinical data inputs to prepare risk set tables
 # with the help of survival::survfit function and ?Surv object.
 
+summary(survival::survfit(Surv(times, patient.vital_status) ~ 1, data = clinical))
+transactional2 <-
+  transactional %>%
+  mutate(time = ifelse(is.na(ended_at),
+                       difftime(max(ended_at, na.rm = TRUE), free_trial_started_at, units = 'days'),
+                       difftime(ended_at, free_trial_started_at, units = 'days'))) %>%
+  mutate(status = (!is.na(ended_at)) %>% as.integer) %>%
+  select(-c(1:2))
+
+
+
 # Can below snippet can help with the survey data?
 
 survey %>% 
