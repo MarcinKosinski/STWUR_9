@@ -63,6 +63,7 @@ survey2 <-
   ) %>% 
   select(-id)
 
+
 # 1.2 Do every survey respondent can have different value of time?
 
 
@@ -79,18 +80,15 @@ survey_transactional <-
 
 # 2.0 Bind survey and transactional data.
 clinical_fit      <- survival::survfit(Surv(times, patient.vital_status) ~ 1, data = clinical)
-transactional_fit <- survival::survfit(Surv(times, status)               ~ 1, data = transactional2)
+transactional_fit <- survival::survfit(Surv(time, status)               ~ 1, data = transactional2)
 survey_fit        <- survival::survfit(Surv(time, event)                 ~ 1, data = survey2)
-gathered_fit      <- survival::survfit(Surv(time, event)                 ~ 1, data = survey2 %>%)
+gathered_fit      <- survival::survfit(Surv(time, event)                 ~ source, data = survey_transactional)
 
 
 ggsurv <- 
-  
-  # Few below lines can help customize the plot
-  
   ggsurvplot(
-    fit, 
-    data = YOUR_DATA, 
+    gathered_fit, 
+    data = survey_transactional, 
     size = 1,                 # change line size
     palette = 
       c("#E7B800", "#2E9FDF"),# custom color palettes
@@ -98,23 +96,134 @@ ggsurv <-
     pval = TRUE,              # Add p-value
     risk.table = TRUE,        # Add risk table
     risk.table.col = "strata",# Risk table color by groups
-    legend.labs = 
-      c("Male", "Female"),    # Change legend labels
+    legend.labs =
+      c("Survey", "Transactional"),    # Change legend labels
     risk.table.height = 0.25, # Useful to change when you have multiple groups
     ggtheme = theme_bw()      # Change ggplot2 theme
   )
 
 # 2.1 Try setting `xlim` and `break.time.by` parameters to adjust the OX axis.
 
+ggsurv2 <- 
+  ggsurvplot(
+    xlim = c(0, 500),
+    break.time.by = 100,
+    gathered_fit, 
+    data = survey_transactional, 
+    size = 1,                 # change line size
+    palette = 
+      c("#E7B800", "#2E9FDF"),# custom color palettes
+    conf.int = TRUE,          # Add confidence interval
+    pval = TRUE,              # Add p-value
+    risk.table = TRUE,        # Add risk table
+    risk.table.col = "strata",# Risk table color by groups
+    legend.labs =
+      c("Survey", "Transactional"),    # Change legend labels
+    risk.table.height = 0.25, # Useful to change when you have multiple groups
+    ggtheme = theme_bw()      # Change ggplot2 theme
+  )
+
+
 # 2.2 Remove censoring marks from the plot.
+
+ggsurv3 <- 
+  ggsurvplot(
+    censor = FALSE,
+    xlim = c(0, 500),
+    break.time.by = 100,
+    gathered_fit, 
+    data = survey_transactional, 
+    size = 1,                 # change line size
+    palette = 
+      c("#E7B800", "#2E9FDF"),# custom color palettes
+    conf.int = TRUE,          # Add confidence interval
+    pval = TRUE,              # Add p-value
+    risk.table = TRUE,        # Add risk table
+    risk.table.col = "strata",# Risk table color by groups
+    legend.labs =
+      c("Survey", "Transactional"),    # Change legend labels
+    risk.table.height = 0.25, # Useful to change when you have multiple groups
+    ggtheme = theme_bw()      # Change ggplot2 theme
+  )
 
 # 2.3 Is the plot more informative when having `median survival pointer` (surv.median.line = "hv")
 
+ggsurv4 <- 
+  ggsurvplot(
+    surv.median.line = "hv",
+    censor = FALSE,
+    xlim = c(0, 500),
+    break.time.by = 100,
+    gathered_fit, 
+    data = survey_transactional, 
+    size = 1,                 # change line size
+    palette = 
+      c("#E7B800", "#2E9FDF"),# custom color palettes
+    conf.int = TRUE,          # Add confidence interval
+    pval = TRUE,              # Add p-value
+    risk.table = TRUE,        # Add risk table
+    risk.table.col = "strata",# Risk table color by groups
+    legend.labs =
+      c("Survey", "Transactional"),    # Change legend labels
+    risk.table.height = 0.25, # Useful to change when you have multiple groups
+    ggtheme = theme_bw()      # Change ggplot2 theme
+  )
+
 # 2.4 Let's remove text labels from risk set table legend and append them with colour bars
 
-risk.table.y.text.col = T,# colour risk table text annotations.
-# risk.table.height = 0.25, # the height of the risk table
-risk.table.y.text = FALSE,# show bars instead of names in text annotations
+ggsurv5 <- 
+  ggsurvplot(
+    risk.table.y.text.col = T,# colour risk table text annotations.
+    risk.table.y.text = FALSE,# show bars instead of names in text annotations
+    surv.median.line = "hv",
+    censor = FALSE,
+    xlim = c(0, 500),
+    break.time.by = 100,
+    gathered_fit, 
+    data = survey_transactional, 
+    size = 1,                 # change line size
+    palette = 
+      c("#E7B800", "#2E9FDF"),# custom color palettes
+    conf.int = TRUE,          # Add confidence interval
+    pval = TRUE,              # Add p-value
+    risk.table = TRUE,        # Add risk table
+    risk.table.col = "strata",# Risk table color by groups
+    legend.labs =
+      c("Survey", "Transactional"),    # Change legend labels
+    risk.table.height = 0.25, # Useful to change when you have multiple groups
+    ggtheme = theme_bw()      # Change ggplot2 theme
+  )
+
+# risk.table.y.text.col = T,# colour risk table text annotations.
+# # risk.table.height = 0.25, # the height of the risk table
+# risk.table.y.text = FALSE,# show bars instead of names in text annotations
+
+parameters <-
+  list(
+    risk.table.y.text.col = T,# colour risk table text annotations.
+    risk.table.y.text = FALSE,# show bars instead of names in text annotations
+    surv.median.line = "hv",
+    censor = FALSE,
+    xlim = c(0, 500),
+    break.time.by = 100,
+    gathered_fit, 
+    data = survey_transactional, 
+    size = 1,                 # change line size
+    palette = 
+      c("#E7B800", "#2E9FDF"),# custom color palettes
+    conf.int = TRUE,          # Add confidence interval
+    pval = TRUE,              # Add p-value
+    risk.table = TRUE,        # Add risk table
+    risk.table.col = "strata",# Risk table color by groups
+    legend.labs =
+      c("Survey", "Transactional"),    # Change legend labels
+    risk.table.height = 0.25, # Useful to change when you have multiple groups
+    ggtheme = theme_bw()      # Change ggplot2 theme
+  )
+do.call(ggsurvplot, parameters)
+
+parameters[['pval']] <- FALSE
+do.call(ggsurvplot, parameters)
 
 # 2.5 Have you ever tried calling do.call(ggsurvplot, list_of_named_parameters)?
 
@@ -160,7 +269,19 @@ ggpar(
 
 # 5.2 Divide the survival curves by a continuous variables. What are the options to cut the continuous variable into groups?
 
+clinical_fit      <- survival::survfit(Surv(times, patient.vital_status) ~ med_ABCD4,
+                                       data = clinical %>% mutate(med_ABCD4 = ABCD4 > median(ABCD4, na.rm = T)))
+ggsurvplot(clinical_fit)
 # 5.3 Use survminer::surv_cutpoint and surv::surv_categorize to divide continuous variable with the maxstat method.
+
+clinical_divided <-
+  survminer::surv_cutpoint(data = clinical, 
+                          time = "times",
+                          event = "patient.vital_status", 
+                          variables = "ABCD4") %>%
+  surv_categorize()
+
+clinical_divided_fit      <- survival::survfit(Surv(times, patient.vital_status) ~ ABCD4, data = clinical_divided)
 
 # 5.4 Create your own code for the maxstat:
 # a) cut continuous variable to, e.g., N pieces
@@ -224,6 +345,17 @@ ggcoxfunctional(Surv(time, status) ~ age + log(age) + sqrt(age), data = lung)
 # 7.1 Based on the diagnostic for example `lung` datasets, provide diagnostic 
 # of cox model assumptions for survey+transactional and clinical datasets.
 
+transactional2_coxph <- 
+  coxph(Surv(time, status) ~ paid_order_count + gender,
+        data = transactional2)
+
+ggcoxzph(cox.zph(transactional2_coxph))
+
+ggcoxfunctional(Surv(time, status) ~ 
+                  paid_order_count + log(paid_order_count)+ sqrt(paid_order_count),
+                data = transactional2)
+
+coxph(Surv(time, status) ~ log(paid_order_count) + strata(gender), data = transactional2)
 
 # exercise 8 --------------------------------------------------------------
 
