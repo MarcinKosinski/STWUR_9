@@ -71,7 +71,18 @@ survey2 <-
 # Use survminer::ggsurvplot function to show survey and transactional data on one 
 # survival plot, and the clinical data with risk set table on the other plot.
 
+survey_transactional <-
+  bind_rows(
+    survey2 %>% ungroup %>% select(time, event) %>% mutate(source = 'survey'),
+    transactional2 %>% select(time, event = status) %>% mutate(source = 'transactional')
+  )
+
 # 2.0 Bind survey and transactional data.
+clinical_fit      <- survival::survfit(Surv(times, patient.vital_status) ~ 1, data = clinical)
+transactional_fit <- survival::survfit(Surv(times, status)               ~ 1, data = transactional2)
+survey_fit        <- survival::survfit(Surv(time, event)                 ~ 1, data = survey2)
+gathered_fit      <- survival::survfit(Surv(time, event)                 ~ 1, data = survey2 %>%)
+
 
 ggsurv <- 
   
